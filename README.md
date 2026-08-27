@@ -108,23 +108,3 @@ cd backend && pytest -q          # calculation / evidence / intent unit tests
 cd frontend && yarn build        # typecheck + production build
 ```
 
-## Evaluation results
-The Evaluation Lab runs a benchmark whose ground truth is recomputed **independently** from raw records (not via the engine) and compared to tool output. A fresh seed scores **100% (10/10)** across numerical accuracy, calculation accuracy, temporal reasoning, tool selection, reconciliation integrity and causal-overreach guarding. Results are measured live — never fabricated.
-
-## Deployment
-- Frontend: any static host / Vercel-compatible (`yarn build`).
-- Backend: Render/Railway-compatible (`uvicorn server:app`).
-- Database: any MongoDB (Atlas etc.). All config via env vars.
-
-## Limitations
-- Demo data is synthetic (deterministic, coherent) unless Razorpay test credentials are supplied.
-- Incremental Razorpay sync is scaffolded (adapter + webhook verification); full historical backfill is not enabled by default.
-- The LLM explainer is optional; disabling it does not affect any numbers.
-
-## Roadmap
-Live Razorpay incremental sync · scheduled digests/alerts · richer force-directed evidence graph · PDF report rendering · anomaly baselines.
-
-## Docs
-`docs/architecture.md` · `docs/ai-trust-model.md` · `docs/evaluation.md` · `docs/security.md` · `docs/api.md`
-
-MIT © ProofLedger
