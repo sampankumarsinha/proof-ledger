@@ -97,5 +97,3 @@ Secrets are server-side only and never exposed to the client.
 4. Click **Show Proof** on a contributor → formula → source transactions.
 5. Open **Reconciliation** → inspect an exception (missing/partial/duplicate/fee difference).
 6. Review **Settlements / Refunds / Receivables** intelligence, save an **Investigation**, and check the **Audit** trail.
-7. **Evaluation Lab** → run the benchmark and see measured accuracy against independently-computed ground truth.
-
