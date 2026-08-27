@@ -1,8 +1,8 @@
 # ProofLedger
 
-**AI that doesn't guess about your money.**
+> **AI that doesn't guess about your money.**
 
-ProofLedger is an evidence-backed AI financial intelligence and investigation platform for merchants and finance teams. Its core principle: **AI reasoning is separated from financial truth.** Financial facts are computed deterministically from the database; the LLM only classifies intent, selects approved tools, and explains verified facts. Every material conclusion traces to source records.
+ProofLedger is an evidence-backed AI financial intelligence and investigation platform for merchants and finance teams. Its core principle: **AI reasoning is separated from financial truth.** Financial facts are computed deterministically from the database; the LLM only classifies intent, selects approved tools, and explains verified facts. Every material conclusion traces directly to source records.
 
 ```
 ┌───────────────────────────────┐
@@ -70,81 +70,115 @@ ProofLedger is an evidence-backed AI financial intelligence and investigation pl
 │  Answer + Calculation + Proof │
 │       + Source Records        │
 └───────────────────────────────┘
+```
 
-## Problem
-Finance teams can't trust "AI numbers." An LLM that invents a revenue figure is worse than useless. But raw dashboards can't investigate *why* cash moved.
+---
 
-## Solution
-ProofLedger computes the numbers itself (deterministic engine over the database), proves them (evidence engine + claim verification), and only then uses AI to plan the investigation and explain the verified facts — with every figure traceable to transactions.
+## Key Features & Overview
 
-## Trust model (non-negotiable)
-The LLM **cannot** invent amounts, transactions, IDs, customer data, totals, or evidence, and cannot claim causation without support. It **may** classify intent, choose tools, summarize/explain verified facts, and suggest next questions. The authoritative numbers shown in any AI answer are always rendered from structured backend facts — never parsed from LLM text. If no OpenAI key is configured, a deterministic explainer is used and all findings/numbers remain fully functional.
+### 1. Problem & Solution
+* **Problem:** Finance teams cannot trust "AI numbers." An LLM that invents or hallucinates financial figures is dangerous. However, raw static dashboards cannot investigate *why* cash moved.
+* **Solution:** ProofLedger computes all figures deterministically via an in-database financial engine, verifies them against source records, and only then uses AI to orchestrate the investigation and explain the verified findings.
 
-## Tech stack
-- **Frontend:** React, React Router, TanStack Query, Tailwind, shadcn/ui, Recharts, Lucide
-- **Backend:** FastAPI, Pydantic, Motor (async MongoDB), JWT (bcrypt), pytest
-- **Database:** MongoDB (integer-paise money, compound indexes, multi-tenant by `organization_id`)
-- **AI:** OpenAI (structured outputs) via a pluggable LLM abstraction layer
-- **Integration:** Razorpay adapter (test mode + webhook signature verification), CSV import
+### 2. Non-Negotiable Trust Model
+The LLM **cannot** invent amounts, transactions, IDs, customer data, totals, or evidence, and cannot claim causation without underlying data support. It **may** classify intent, select authorized tools, summarize verified facts, and suggest next investigation steps. If no OpenAI API key is configured, a deterministic rule-based explainer is used, ensuring 100% functionality without LLM dependencies.
 
-> This repository targets the **React + FastAPI + MongoDB** runtime. The financial engine, tool system, evidence model, and trust architecture are stack-agnostic and map 1:1 to the originally-specified Postgres/Redis design.
+---
 
-## Modules
-Control Tower · AI Financial Analyst · Financial Autopsy · Evidence Explorer & Graph · Reconciliation Center · Settlement Intelligence · Receivables Intelligence · Refund Intelligence · Investigation Workspace · Scenario Simulator · Counterfactual Analysis · Decision Center · Evaluation Lab · Audit Trail · Data Explorer · Razorpay Integration · Data Import · Reports/Export.
+## Architecture & Tech Stack
 
-## Razorpay integration (TEST mode)
-Add `RAZORPAY_KEY_ID` + `RAZORPAY_KEY_SECRET` (and optional `RAZORPAY_WEBHOOK_SECRET`) to `backend/.env` — server-side only, never exposed to React. Then in **Settings → Razorpay integration**: **Test connection**, **Sync now (initial)**, then **Incremental sync** for subsequent runs. The adapter paginates orders/payments/refunds/settlements, normalizes them into the same ProofLedger models with `source=RAZORPAY_TEST` and `external_id=<razorpay id>`, and is idempotent (re-syncing updates, never duplicates). A **data-source toggle** (Settings) switches every module between **DEMO DATA** and **RAZORPAY TEST** — the same FinancialEngine / ReconciliationEngine / EvidenceEngine run on both; datasets are never mixed. Webhooks are verified via the SDK's `verify_webhook_signature`. Without credentials the app stays in clearly-labelled **DEMO DATA** mode and never claims live data.
+* **Frontend:** React 19, React Router v7, TanStack Query, Tailwind CSS, shadcn/ui, Recharts, Lucide Icons
+* **Backend:** FastAPI, Pydantic, Motor (Async MongoDB Driver), Pytest, JWT Authentication
+* **Database:** MongoDB (integer-paise precision money calculations, compound indexes, multi-tenant by `organization_id`)
+* **AI Engine:** OpenAI (structured outputs) via a pluggable LLM abstraction layer
+* **Integrations:** Razorpay Adapter (Test mode & webhook signature verification), CSV Data Importer
 
-> Note: Razorpay TEST accounts usually have **no settlements** unless payouts were simulated, so `cash_received` may be small/zero on live test data — the demo dataset tells the richer delayed-settlement story.
+---
 
-## Anomaly baselines & Attention center
-Overview shows transparent rolling baselines (current vs prior period) for payment volume, refund rate, settlement cash and fees with **NORMAL / ELEVATED / UNUSUAL** status (fixed thresholds, `GET /analytics/baselines`), and an Attention center (`GET /analytics/attention`) listing pending settlements, reconciliation exceptions, refund spikes, fee discrepancies and unusual movements — each with reason, amount, severity, evidence and a recommended action. Nothing is called fraud without evidence.
+## Core Platform Modules
 
-## Deployment Setup
-No external runtime locks or proprietary server requirements.
-- **Frontend**: `cd frontend && yarn build` → deploy the static `build/` (Vercel/Netlify/S3). Set `REACT_APP_BACKEND_URL` to the backend URL.
-- **Backend**: `uvicorn server:app --host 0.0.0.0 --port 8001` on Render/Railway/Fly. Set env vars below.
-- **Database**: MongoDB Atlas — put the connection string in `MONGODB_URI` (or `MONGO_URL`).
-- **Docker**: `docker compose up --build` runs frontend + backend + mongo + redis.
+* **Control Tower:** Key performance indicators and executive metric overview
+* **AI Financial Analyst:** Natural language investigation powered by deterministic tools
+* **Financial Autopsy:** Root-cause analysis of cash drops and revenue changes
+* **Evidence Explorer & Graph:** Visual trace from high-level metrics down to raw ledger entries
+* **Reconciliation Center:** Automated classification of payment vs settlement discrepancies
+* **Settlement Intelligence:** Delayed payout tracking, rolling reserves, and fee analysis
+* **Receivables & Refund Intelligence:** Aging analysis, risk scoring, and return reason trends
+* **Investigation Workspace & Decision Center:** Collaborative decision tracking and scenario simulations
+* **Evaluation Lab & Audit Trail:** Quantitative accuracy benchmark and full system change logs
 
-Required environment variables: `MONGODB_URI`, `JWT_SECRET`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` (+ optional `RAZORPAY_WEBHOOK_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`).
+---
 
-## Local setup
+## Integrations & Features
+
+### Razorpay Integration (Test Mode)
+Add `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` to `backend/.env`. In **Settings → Razorpay integration**, test the connection and run initial or incremental syncs. The adapter paginates orders, payments, refunds, and settlements into standardized ProofLedger models. A data-source toggle switches the entire UI between **DEMO DATA** and **RAZORPAY TEST** safely without mixing datasets.
+
+### Anomaly Baselines & Attention Center
+The Overview module computes rolling baselines (current vs prior period) for payment volume, refund rate, settlement cash, and fees with **NORMAL / ELEVATED / UNUSUAL** status flags. The Attention Center prioritizes pending settlements, reconciliation exceptions, refund spikes, and fee discrepancies with recommended actions and evidence links.
+
+---
+
+## Environment Variables
+
+| Variable | Scope | Purpose |
+|----------|-------|---------|
+| `MONGODB_URI` / `MONGO_URL` | Backend | MongoDB database connection string |
+| `JWT_SECRET` | Backend | JWT token signing key |
+| `ADMIN_EMAIL` & `ADMIN_PASSWORD` | Backend | Initial seeded owner account credentials |
+| `OPENAI_API_KEY` & `OPENAI_MODEL` | Backend | Optional AI explainer key (defaults to deterministic fallback if omitted) |
+| `RAZORPAY_KEY_ID` & `RAZORPAY_KEY_SECRET` | Backend | Optional Razorpay Test Mode API credentials |
+| `REACT_APP_BACKEND_URL` | Frontend | API backend URL endpoint |
+
+---
+
+## Quick Start & Local Setup
+
+### 1. Manual Setup
+
 ```bash
-# Backend
+# 1. Backend Setup
 cd backend
 pip install -r requirements.txt
-cp .env.example .env            # set MONGO_URL, JWT_SECRET, (optional) OPENAI_API_KEY / RAZORPAY_*
-uvicorn server:app --host 0.0.0.0 --port 8001
+cp .env.example .env            # Configure MONGO_URL, JWT_SECRET, etc.
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 
-# Frontend
+# 2. Frontend Setup (in a new terminal tab)
 cd frontend
-yarn install
-cp .env.example .env            # set REACT_APP_BACKEND_URL
-yarn start
+npm install                     # or yarn install
+cp .env.example .env            # Configure REACT_APP_BACKEND_URL
+npm start                       # or yarn start
 ```
-Demo data (coherent financial stories) is seeded automatically on first backend startup.
 
-## Docker
+### 2. Docker Compose Setup
+
 ```bash
+# Build and launch all services (Frontend :3000, Backend :8001, Mongo :27017)
 docker compose up --build
-# frontend :3000  backend :8001  mongo :27017  redis :6379
 ```
 
+---
 
+## Demo Credentials & Guided Walkthrough
 
-## Demo credentials
+### Credentials
 | Role | Email | Password |
 |------|-------|----------|
-| OWNER | cfo@proofledger.com | Demo123! |
-| ADMIN | admin@proofledger.com | Demo123! |
-| ANALYST | analyst@proofledger.com | Demo123! |
-| VIEWER | viewer@proofledger.com | Demo123! |
+| **OWNER** | `cfo@proofledger.com` | `Demo123!` |
+| **ADMIN** | `admin@proofledger.com` | `Demo123!` |
+| **ANALYST** | `analyst@proofledger.com` | `Demo123!` |
+| **VIEWER** | `viewer@proofledger.com` | `Demo123!` |
 
-## Demo (3–5 min)
-1. Open **Control Tower** — cash received is down vs prior period.
+### 5-Minute Guided Demo Flow
+1. Open **Control Tower** — observe cash received status vs prior period.
 2. Ask the **AI Analyst**: *"Why did cash decrease this month?"*
-3. Watch tool execution → verified findings ranked by impact (settlement timing, refunds, receivables…).
-4. Click **Show Proof** on a contributor → formula → source transactions.
-5. Open **Reconciliation** → inspect an exception (missing/partial/duplicate/fee difference).
-6. Review **Settlements / Refunds / Receivables** intelligence, save an **Investigation**, and check the **Audit** trail.
+3. Watch the tool execution workflow produce verified findings ranked by impact.
+4. Click **Show Proof** on any contributor to inspect formula lineage down to source transactions.
+5. Navigate to **Reconciliation Center** to review exceptions and fee discrepancies.
+6. Explore **Settlements**, **Refunds**, and **Receivables** intelligence, save an **Investigation**, and check the **Audit Trail**.
+
+---
+
+## License
+
+MIT © ProofLedger
