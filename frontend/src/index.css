@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 224 76% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 19% 35%;
+    --accent: 214 95% 93%;
+    --accent-foreground: 224 76% 33%;
+    --destructive: 0 72% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 224 76% 48%;
+    --radius: 0.25rem;
+    --navy: 222 60% 10%;
+  }
+}
+
+* { border-color: hsl(var(--border)); }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display { font-family: 'Cabinet Grotesk', 'IBM Plex Sans', sans-serif; }
+.font-mono, .tabular { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+
+::selection { background: hsl(224 76% 48% / 0.18); }
+
+/* thin, crisp scrollbars */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: hsl(215 20% 78%); border-radius: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+.pl-hairline { border: 1px solid hsl(var(--border)); }
+.pl-grid-bg {
+  background-image: linear-gradient(hsl(var(--border)/0.6) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(var(--border)/0.6) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.kpi-hover { transition: background-color .15s ease, border-color .15s ease; }
+.kpi-hover:hover { background-color: hsl(210 40% 98%); border-color: hsl(224 76% 48% / 0.5); }
+.nav-item { transition: background-color .12s ease, color .12s ease; }
+.row-hover { transition: background-color .1s ease; }
+.row-hover:hover { background-color: hsl(210 40% 97%); }
+@keyframes pl-fade { from { opacity: 0; transform: translateY(4px);} to {opacity:1; transform:none;} }
+.pl-fade { animation: pl-fade .28s ease both; }

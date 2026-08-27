@@ -1,0 +1,28 @@
+# deps
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# env
+.env
+*.env
+!.env.example
+
+# build
+frontend/build/
+dist/
+
+# logs / os
+*.log
+.DS_Store
+.idea/
+.vscode/
+.env.*
+credentials.json
+*.pem
+*.key
+.credentials
+frontend/node_modules/.cache/default-development/1.pack
