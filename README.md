@@ -119,18 +119,7 @@ The Overview module computes rolling baselines (current vs prior period) for pay
 
 ---
 
-## Environment Variables
 
-| Variable | Scope | Purpose |
-|----------|-------|---------|
-| `MONGODB_URI` / `MONGO_URL` | Backend | MongoDB database connection string |
-| `JWT_SECRET` | Backend | JWT token signing key |
-| `ADMIN_EMAIL` & `ADMIN_PASSWORD` | Backend | Initial seeded owner account credentials |
-| `OPENAI_API_KEY` & `OPENAI_MODEL` | Backend | Optional AI explainer key (defaults to deterministic fallback if omitted) |
-| `RAZORPAY_KEY_ID` & `RAZORPAY_KEY_SECRET` | Backend | Optional Razorpay Test Mode API credentials |
-| `REACT_APP_BACKEND_URL` | Frontend | API backend URL endpoint |
-
----
 
 ## Quick Start & Local Setup
 
@@ -140,14 +129,14 @@ The Overview module computes rolling baselines (current vs prior period) for pay
 # 1. Backend Setup
 cd backend
 pip install -r requirements.txt
-cp .env.example .env            # Configure MONGO_URL, JWT_SECRET, etc.
+cp .env.example .env            
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 
 # 2. Frontend Setup (in a new terminal tab)
 cd frontend
-npm install                     # or yarn install
-cp .env.example .env            # Configure REACT_APP_BACKEND_URL
-npm start                       # or yarn start
+npm install                     
+cp .env.example .env            
+npm start                       
 ```
 
 ### 2. Docker Compose Setup
@@ -179,6 +168,3 @@ docker compose up --build
 
 ---
 
-## License
-
-MIT © ProofLedger
