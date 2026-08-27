@@ -70,17 +70,7 @@ docker compose up --build
 # frontend :3000  backend :8001  mongo :27017  redis :6379
 ```
 
-## Environment variables
-| Var | Where | Purpose |
-|-----|-------|---------|
-| `MONGO_URL`, `DB_NAME` | backend | Database |
-| `JWT_SECRET` | backend | Token signing |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | backend | Seeded owner account |
-| `OPENAI_API_KEY`, `OPENAI_MODEL` | backend | Optional AI explainer (your own key) |
-| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | backend | Optional Razorpay **test** integration |
-| `REACT_APP_BACKEND_URL` | frontend | API base |
 
-Secrets are server-side only and never exposed to the client.
 
 ## Demo credentials
 | Role | Email | Password |
