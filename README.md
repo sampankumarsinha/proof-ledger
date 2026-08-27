@@ -99,12 +99,3 @@ Secrets are server-side only and never exposed to the client.
 6. Review **Settlements / Refunds / Receivables** intelligence, save an **Investigation**, and check the **Audit** trail.
 7. **Evaluation Lab** → run the benchmark and see measured accuracy against independently-computed ground truth.
 
-## Razorpay integration
-Provide `RAZORPAY_KEY_ID/SECRET` (test mode) to switch the environment badge to **RAZORPAY TEST** and enable a live connection check. Without credentials, the app runs in clearly-labelled **DEMO DATA** mode and never claims live data. Webhooks are verified via HMAC-SHA256 using `RAZORPAY_WEBHOOK_SECRET`.
-
-## Testing
-```bash
-cd backend && pytest -q          # calculation / evidence / intent unit tests
-cd frontend && yarn build        # typecheck + production build
-```
-
