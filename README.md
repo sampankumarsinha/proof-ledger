@@ -5,10 +5,71 @@
 ProofLedger is an evidence-backed AI financial intelligence and investigation platform for merchants and finance teams. Its core principle: **AI reasoning is separated from financial truth.** Financial facts are computed deterministically from the database; the LLM only classifies intent, selects approved tools, and explains verified facts. Every material conclusion traces to source records.
 
 ```
-USER → AI QUERY PLANNER → APPROVED FINANCIAL TOOLS → DATABASE
-     → DETERMINISTIC CALCULATIONS → VERIFIED FACTS → EVIDENCE ENGINE
-     → CLAIM VERIFICATION → AI EXPLANATION → AUDITABLE ANSWER
-```
+┌───────────────────────────────┐
+│             USER              │
+│      Financial Question       │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       AI QUERY PLANNER        │
+│  Understand intent & context  │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│     APPROVED FINANCIAL        │
+│           TOOLS               │
+│  No arbitrary DB/SQL queries  │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│           DATABASE            │
+│        MongoDB Records        │
+│ Payments • Refunds • Fees     │
+│ Settlements • Receivables     │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│   DETERMINISTIC CALCULATIONS  │
+│       Financial Engine        │
+│       Integer Paise Math      │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       VERIFIED FINANCIAL      │
+│            FACTS              │
+│  Amounts • Changes • Metrics  │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       EVIDENCE ENGINE         │
+│  Calculations → Transactions  │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       CLAIM VERIFICATION      │
+│  Fact vs inference vs claim   │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       AI EXPLANATION          │
+│   Explain verified results    │
+│       without guessing        │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       AUDITABLE ANSWER        │
+│  Answer + Calculation + Proof │
+│       + Source Records        │
+└───────────────────────────────┘
 
 ## Problem
 Finance teams can't trust "AI numbers." An LLM that invents a revenue figure is worse than useless. But raw dashboards can't investigate *why* cash moved.
