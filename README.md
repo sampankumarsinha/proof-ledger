@@ -126,13 +126,13 @@ The Overview module computes rolling baselines (current vs prior period) for pay
 ### 1. Manual Setup
 
 ```bash
-# 1. Backend Setup
+# 1.Backend Setup
 cd backend
 pip install -r requirements.txt
 cp .env.example .env            
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 
-# 2. Frontend Setup (in a new terminal tab)
+# 2.Frontend Setup
 cd frontend
 npm install                     
 cp .env.example .env            
