@@ -142,7 +142,7 @@ npm start
 ### 2. Docker Compose Setup
 
 ```bash
-# Build and launch all services (Frontend :3000, Backend :8001, Mongo :27017)
+
 docker compose up --build
 ```
 
