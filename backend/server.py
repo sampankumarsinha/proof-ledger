@@ -852,13 +852,17 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    from app.db import migrate_sources
-    await ensure_indexes()
-    await seed_admin_and_org()
-    await migrate_sources()
-    logger.info("ProofLedger startup complete. AI=%s Integration=%s",
-                "on" if os.environ.get("OPENAI_API_KEY") else "demo",
-                "razorpay_test" if os.environ.get("RAZORPAY_KEY_ID") else "demo")
+    try:
+        from app.db import migrate_sources
+        await ensure_indexes()
+        await seed_admin_and_org()
+        await migrate_sources()
+        logger.info("ProofLedger startup complete. AI=%s Integration=%s",
+                    "on" if os.environ.get("OPENAI_API_KEY") else "demo",
+                    "razorpay_test" if os.environ.get("RAZORPAY_KEY_ID") else "demo")
+    except Exception as e:
+        logger.warning(f"Startup DB init failed or skipped: {e}")
+
 
 
 @app.on_event("shutdown")

@@ -16,10 +16,11 @@ def get_client() -> AsyncIOMotorClient:
 
     if _client is None:
         uri = os.environ.get("MONGO_URL") or os.environ.get("MONGODB_URI") or "mongodb://localhost:27017"
-        _client = AsyncIOMotorClient(uri)
+        _client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=2000)
     elif current_loop and hasattr(_client, "io_loop") and getattr(_client.io_loop, "is_closed", lambda: False)():
         uri = os.environ.get("MONGO_URL") or os.environ.get("MONGODB_URI") or "mongodb://localhost:27017"
-        _client = AsyncIOMotorClient(uri)
+        _client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=2000)
+
     return _client
 
 
