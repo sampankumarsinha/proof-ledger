@@ -553,61 +553,7 @@ Finish by opening an investigation and showing its evidence and audit trail.
 
 ---
 
-## Deployment
 
-ProofLedger can be deployed outside the local development environment.
-
-A typical production architecture is:
-
-```text
-React Frontend
-      │
-      ▼
-   Vercel
-      │
-      ▼
-FastAPI Backend
-      │
-      ├──────── MongoDB Atlas
-      │
-      ├──────── OpenAI API
-      │
-      └──────── Razorpay Test API
-```
-
-The frontend should use the deployed backend URL:
-
-```env
-REACT_APP_BACKEND_URL=https://your-backend-url
-```
-
-The backend should store MongoDB, JWT, OpenAI, and Razorpay credentials using the deployment platform's environment-variable system.
-
-The frontend should never receive private backend credentials.
-
----
-
-## Vercel
-
-The frontend can be built using:
-
-```bash
-cd frontend
-npm install
-npm run build
-```
-
-The generated production build can then be deployed to a static hosting provider such as Vercel.
-
-If the repository uses a Vercel configuration for the backend/API, the relevant configuration is stored in:
-
-```text
-vercel.json
-```
-
-Environment variables should be configured through the deployment platform rather than committed to the repository.
-
----
 
 ## API Health Checks
 
