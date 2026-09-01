@@ -24,7 +24,9 @@ async def reconcile(org_id: str, limit: int = 1000, source: str = "DEMO"):
     settlements = {s["id"]: s for s in await db.settlements.find(base, {"_id": 0}).to_list(100000)}
     refunds_by_pay = {}
     for r in await db.refunds.find(base, {"_id": 0}).to_list(100000):
-        refunds_by_pay.setdefault(r["payment_id"], []).append(r)
+        pid = r.get("payment_id")
+        if pid:
+            refunds_by_pay.setdefault(pid, []).append(r)
 
     # detect duplicates: same (order_id, amount) captured more than once
     seen = {}

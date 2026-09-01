@@ -9,20 +9,14 @@ from datetime import datetime, timezone, timedelta
 
 from .db import get_db
 from .money import rupees, format_inr, pct
+from .date_ranges import resolve_period_key
 
 CALC_VERSION = "1.0.0"
 
 
 def resolve_period(period_key: str = "current", date_from: str = None, date_to: str = None):
-    now = datetime.now(timezone.utc)
-    if date_from and date_to:
-        return {"key": "custom", "from": date_from, "to": date_to, "label": "Custom range"}
-    if period_key == "prior":
-        start = now - timedelta(days=60)
-        end = now - timedelta(days=30)
-        return {"key": "prior", "from": start.isoformat(), "to": end.isoformat(), "label": "Prior 30 days"}
-    start = now - timedelta(days=30)
-    return {"key": "current", "from": start.isoformat(), "to": now.isoformat(), "label": "Last 30 days"}
+    """Resolve a period key or explicit dates. Delegates to date_ranges module."""
+    return resolve_period_key(period_key, date_from, date_to)
 
 
 def _range_q(field, period):
@@ -223,66 +217,6 @@ async def get_record(org_id, collection, record_id):
     return doc
 
 
-# ================= TYPED TOOL REGISTRY =================
-# The LLM may ONLY call these named tools. No arbitrary SQL/queries allowed.
-TOOL_SPECS = {
-    "get_revenue": "Gross revenue (captured payments) for a period",
-    "get_net_revenue": "Net revenue = gross - fees - refunds",
-    "get_cash_received": "Cash actually settled to bank in period",
-    "get_payment_volume": "Successful payment count and average value",
-    "get_refunds": "Total refunds in period",
-    "get_refund_rate": "Refund rate = refunds / gross revenue",
-    "get_pending_settlements": "Sum of settlements still pending",
-    "get_receivables": "Outstanding receivables",
-    "get_overdue_receivables": "Overdue receivables",
-    "get_unreconciled_transactions": "Captured payments with no settlement",
-    "get_failed_payments": "Failed payment count",
-    "get_top_customers": "Top customers by revenue",
-    "get_top_products": "Top products by revenue",
-    "compare_periods": "Compare a metric across current vs prior period",
-    "get_receivables_aging": "Receivables split by aging buckets",
-}
-
-
-async def run_tool(org_id, name, args=None, source=DEFAULT_SOURCE):
-    args = args or {}
-    eng = FinancialEngine(org_id, source)
-    period = resolve_period(args.get("period", "current"), args.get("from"), args.get("to"))
-    if name == "get_revenue":
-        return await eng.gross_revenue(period)
-    if name == "get_net_revenue":
-        return await eng.net_revenue(period)
-    if name == "get_cash_received":
-        return await eng.cash_received(period)
-    if name == "get_payment_volume":
-        return await eng.average_payment_value(period)
-    if name == "get_refunds":
-        return await eng.refunds(period)
-    if name == "get_refund_rate":
-        return await eng.refund_rate(period)
-    if name == "get_pending_settlements":
-        return await eng.pending_settlements(period)
-    if name == "get_receivables":
-        return await eng.receivables_outstanding(period)
-    if name == "get_overdue_receivables":
-        return await eng.overdue_receivables(period)
-    if name == "get_unreconciled_transactions":
-        return await eng.unreconciled_amount(period)
-    if name == "get_failed_payments":
-        return await eng.failed_payments(period)
-    if name == "get_receivables_aging":
-        return await eng.receivables_aging()
-    if name == "get_top_customers":
-        return await top_customers(org_id, period, args.get("limit", 10), source)
-    if name == "get_top_products":
-        return await top_products(org_id, period, args.get("limit", 10), source)
-    if name == "compare_periods":
-        cur = resolve_period("current")
-        prior = resolve_period("prior")
-        return await eng.compare_periods(args.get("metric", "cash_received"), cur, prior)
-    raise ValueError(f"Unknown tool: {name}")
-
-
 async def top_customers(org_id, period, limit=10, source=DEFAULT_SOURCE):
     db = get_db()
     pipeline = [
@@ -322,3 +256,8 @@ async def top_products(org_id, period, limit=10, source=DEFAULT_SOURCE):
                     "count": r["count"], "refunded": refunded,
                     "refund_rate": pct(refunded, r["total"])})
     return {"metric": "top_products", "rows": out, "period": period, "verified": True}
+
+
+# ================= TYPED TOOL REGISTRY =================
+# Re-exported from tools.py for backward compatibility.
+from .tools import TOOL_SPECS, run_tool  # noqa: E402, F401

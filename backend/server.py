@@ -10,6 +10,7 @@ import io
 import time
 import uuid
 import logging
+from typing import Optional, Dict, Any
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Request, UploadFile, File
@@ -244,6 +245,7 @@ async def dashboard_trend(metric: str = "cash_received", user: dict = Depends(ge
 # ===================== AI analyst / ask =====================
 class AskBody(BaseModel):
     question: str
+    context: Optional[dict] = None
 
 
 class DecisionBody(BaseModel):
@@ -274,7 +276,7 @@ async def suggestions(user: dict = Depends(get_current_user)):
 async def ask(body: AskBody, user: dict = Depends(get_current_user)):
     org = user["organization_id"]
     src = await get_active_source(org)
-    result = await investigate(org, body.question, src)
+    result = await investigate(org, body.question, src, context=body.context)
     await audit(org, user, "ai_ask", {"question": body.question, "intent": result["intent"],
                                        "tools": [t["tool"] for t in result["tool_log"]],
                                        "confidence": result["confidence"]["band"],

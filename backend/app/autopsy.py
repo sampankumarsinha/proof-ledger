@@ -34,10 +34,10 @@ async def _pending_created(org_id, period, source="DEMO"):
     return sum(d["amount_paise"] for d in docs), [d["id"] for d in docs]
 
 
-async def cash_autopsy(org_id: str, source: str = "DEMO"):
+async def cash_autopsy(org_id: str, source: str = "DEMO", cur=None, prior=None):
     eng = FinancialEngine(org_id, source)
-    cur = resolve_period("current")
-    prior = resolve_period("prior")
+    cur = cur or resolve_period("current")
+    prior = prior or resolve_period("prior")
 
     cash_cur = await eng.cash_received(cur)
     cash_prior = await eng.cash_received(prior)
